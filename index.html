@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Legal Assistant</title>
+</head>
+<body>
+  <h2>⚖️ AI Legal Assistant</h2>
+
+  <form id="caseForm" enctype="multipart/form-data">
+    <label>Upload Case PDF:</label>
+    <input type="file" name="pdf" accept=".pdf" required><br><br>
+
+    <label>Enter your legal question (optional):</label><br>
+    <textarea name="query" rows="4" cols="50"></textarea><br><br>
+
+    <label>Or upload voice question (optional .mp3):</label>
+    <input type="file" name="audio" accept=".mp3"><br><br>
+
+    <button type="submit">Submit Case</button>
+  </form>
+
+  <hr>
+
+  <h3>📝 Case Summary</h3>
+  <pre id="summary"></pre>
+
+  <h3>🗣️ Your Query</h3>
+  <pre id="query"></pre>
+
+  <h3>⚖️ Legal Recommendation</h3>
+  <pre id="analysis"></pre>
+
+  <script>
+    document.getElementById('caseForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+
+      const res = await fetch('http://localhost:5000/analyze-case', {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+
+      document.getElementById('summary').textContent = data.summary || "No summary.";
+      document.getElementById('query').textContent = data.user_query || "No query.";
+      document.getElementById('analysis').textContent = data.legal_analysis || "No analysis.";
+    });
+  </script>
+</body>
+</html>
